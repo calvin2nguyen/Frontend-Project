@@ -1,11 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getAlbums } from './features/albums/album'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
 
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [albums, setAlbums] = useState([])
+
+  useEffect( () => {
+    async function loadAlbums(){
+      const data = await getAlbums("year:2024")
+      console.log(data)
+      setAlbums(data);
+    }
+  loadAlbums()
+  },[])
 
   return (
     <>
@@ -31,10 +42,12 @@ function App() {
           <p>Your questions, answered</p>
           <ul>
             <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
+              {albums.map((album) => (
+                <li key={album.id}>
+                  <ul>{album.name}</ul>
+                  <img src={album.images[0]?.url}/>
+                </li>
+              ))}
             </li>
             <li>
               <a href="https://react.dev/" target="_blank">
