@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getAlbums } from './features/albums/albumApi'
+import { getArtists } from './features/artists/artists'
 import AlbumSection from './features/albums/albumSection'
 import ArtistSection from './features/artists/artistsSection'
 import reactLogo from './assets/react.svg'
@@ -23,9 +24,10 @@ function App() {
 
   useEffect( () => {
     async function loadArtists(){
-      const data = await getArtists("artist")
+      const data = await getArtists("year:2026")
       setArtists(data);
     }
+    loadArtists()
   },[])
 
   
@@ -55,7 +57,6 @@ function App() {
             <AlbumSection albums={albums} />
           <h2>Top Artists</h2>
             <ArtistSection artists={artists} />
-
           </ul>
         </div>
       </section>

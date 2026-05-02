@@ -1,7 +1,7 @@
 import { Box, Card, CardMedia, Typography, IconButton } from "@mui/material"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 
-function AlbumSection({ albums }) {
+function ArtistSection({ artists }) {
   return (
     <Box sx={{ bgcolor: "#121212", color: "white", p: 3 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
@@ -22,9 +22,9 @@ function AlbumSection({ albums }) {
           pb: 1,
         }}
       >
-        {albums.map((album) => (
+        {artists.map((artist) => (
           <Card
-            key={album.id}
+            key={artist.id}
             sx={{
               minWidth: 180,
               bgcolor: "#181818",
@@ -44,8 +44,8 @@ function AlbumSection({ albums }) {
             <Box sx={{ position: "relative" }}>
               <CardMedia
                 component="img"
-                image={album.images[0]?.url}
-                alt={album.name}
+                image={artist.images[0]?.url}
+                alt={artist.name}
                 sx={{
                   width: "100%",
                   aspectRatio: "1 / 1",
@@ -75,11 +75,11 @@ function AlbumSection({ albums }) {
             </Box>
 
             <Typography fontWeight="bold" sx={{ mt: 1 }} noWrap>
-              {album.name}
+              {artist.name}
             </Typography>
 
             <Typography color="#b3b3b3" noWrap>
-              {album.artists[0]?.name}
+              {artist.artists}
             </Typography>
           </Card>
         ))}
@@ -88,4 +88,4 @@ function AlbumSection({ albums }) {
   )
 }
 
-export default AlbumSection
+export default ArtistSection
