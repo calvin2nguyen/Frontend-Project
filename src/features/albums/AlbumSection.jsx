@@ -10,7 +10,6 @@ function AlbumSection({ albums, onSelectAlbum}) {
         </Typography>
 
         <Typography sx={{ color: "#b3b3b3", fontWeight: "bold" }}>
-          Show all
         </Typography>
       </Box>
 
@@ -61,13 +60,13 @@ function AlbumSection({ albums, onSelectAlbum}) {
                   position: "absolute",
                   right: 8,
                   bottom: 8,
-                  bgcolor: "#939794",
+                  bgcolor: "#A2BFFE",
                   color: "black",
                   opacity: 0,
                   transform: "translateY(8px)",
                   transition: "0.2s",
                   "&:hover": {
-                    bgcolor: "#939794",
+                    bgcolor: "#A2BFFE",
                   },
                 }}
               >

@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { getAlbums } from './features/albums/AlbumApi'
 import { getArtists ,  getArtistAlbums } from './features/artists/ArtistsApi'
+import { searchTracks } from './features/tracks/TrackApi'
 import PlaybackSelection from './features/playback/PlaybackSection'
 import AlbumSection from './features/albums/AlbumSection'
 import ArtistSection from './features/artists/ArtistsSection'
+import Search from "./features/search/Search"
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
@@ -14,14 +16,21 @@ function App() {
   const [albums, setAlbums] = useState([])
   const [artists, setArtists] = useState([])
   const [selectedAlbum, setSelectedAlbum] = useState(null)
+  const [tracks, setTracks] = useState([])
  
   
 
 function handleSelectAlbum(album) {
-  setSelectedAlbum(null) // reset first
+  setSelectedAlbum(null)
   setTimeout(() => {
     setSelectedAlbum(album)
   }, 0)
+}
+
+async function handleSearch(query) {
+  if (!query.trim()) return
+  const tracks = await searchTracks(query)
+  setTracks(tracks)
 }
   
   async function handleSelectArtist(artist){
@@ -66,17 +75,32 @@ function handleSelectAlbum(album) {
         </div>
       </section>
 
+<div className="app-shell">
+  <aside className="left-sidebar">
+    <p>Playlists</p>
+  </aside>
 
-      <section id="next-steps">
-        <div id="docs">
-          <h2>New Releases</h2>
-            <AlbumSection albums={albums} onSelectAlbum={handleSelectAlbum} />
-          <h2>Top Artists</h2>
-            <ArtistSection artists={artists} onSelectArtist={handleSelectArtist} /> 
+  <main className="main-content">
+    <AlbumSection albums={albums} onSelectAlbum={handleSelectAlbum} />
+    <ArtistSection artists={artists} onSelectArtist={handleSelectArtist} />
+  </main>
+
+  <aside className="right-sidebar">
+    <Search onSearch={handleSearch} />
+
+    {tracks.map((track) => (
+      <div key={track.id} className="track-result">
+        <img src={track.album.images[0]?.url} />
+        <div>
+          <p>{track.name}</p>
+          <span>{track.artists[0]?.name}</span>
         </div>
-      </section>
+      </div>
+    ))}
+  </aside>
+</div>
 
-      <PlaybackSelection album={selectedAlbum}/>
+      {/* <PlaybackSelection album={selectedAlbum}/> */}
       
  
     </>
