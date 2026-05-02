@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
-import { getAlbums } from './features/albums/album'
+import { getAlbums } from './features/albums/AlbumApi'
+import { getArtists ,  getArtistAlbums } from './features/artists/ArtistsApi'
+import PlaybackSelection from './features/playback/PlaybackSection'
+import AlbumSection from './features/albums/AlbumSection'
+import ArtistSection from './features/artists/ArtistsSection'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
@@ -8,15 +12,43 @@ import './App.css'
 
 function App() {
   const [albums, setAlbums] = useState([])
+  const [artists, setArtists] = useState([])
+  const [selectedAlbum, setSelectedAlbum] = useState(null)
+ 
+  
+
+function handleSelectAlbum(album) {
+  setSelectedAlbum(null) // reset first
+  setTimeout(() => {
+    setSelectedAlbum(album)
+  }, 0)
+}
+  
+  async function handleSelectArtist(artist){
+    const albums = await getArtistAlbums(artist.id)
+    // Have to get random album here because getting Artist top picks was deprecated and not working :(
+    const randomNum = Math.floor(Math.random() * albums.length)
+    setSelectedAlbum(albums[randomNum])
+  }
 
   useEffect( () => {
     async function loadAlbums(){
-      const data = await getAlbums("year:2024")
-      console.log(data)
+      const data = await getAlbums("year:2026")
+
       setAlbums(data);
     }
   loadAlbums()
   },[])
+
+  useEffect( () => {
+    async function loadArtists(){
+      const data = await getArtists("year:2026")
+      setArtists(data);
+    }
+    loadArtists()
+  },[])
+
+  
 
   return (
     <>
@@ -34,91 +66,21 @@ function App() {
         </div>
       </section>
 
-      <div className="ticks"></div>
 
       <section id="next-steps">
         <div id="docs">
           <h2>New Releases</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              {albums.map((album) => (
-                <li key={album.id}>
-                  <ul>{album.name}</ul>
-                  <img src={album.images[0]?.url}/>
-                </li>
-              ))}
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+            <AlbumSection albums={albums} onSelectAlbum={handleSelectAlbum} />
+          <h2>Top Artists</h2>
+            <ArtistSection artists={artists} onSelectArtist={handleSelectArtist} /> 
         </div>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <PlaybackSelection album={selectedAlbum}/>
+      
+ 
     </>
+    
   )
 }
 
