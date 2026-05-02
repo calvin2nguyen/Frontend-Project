@@ -9,8 +9,9 @@ export async function getArtists(queryType) {
             limit: 10
         }
     })
-    console.log(response)
     return response.data.artists.items
-
 }
-
+export async function getArtistAlbums(artistId) {
+  const response = await musicApi.get(`/artists/${artistId}/albums`)
+  return response.data.items
+}

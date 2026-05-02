@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { getAlbums } from './features/albums/albumApi'
-import { getArtists } from './features/artists/artists'
-import AlbumSection from './features/albums/albumSection'
-import ArtistSection from './features/artists/artistsSection'
+import { getAlbums } from './features/albums/AlbumApi'
+import { getArtists ,  getArtistAlbums } from './features/artists/ArtistsApi'
+import PlaybackSelection from './features/playback/PlaybackSection'
+import AlbumSection from './features/albums/AlbumSection'
+import ArtistSection from './features/artists/ArtistsSection'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
@@ -12,6 +13,23 @@ import './App.css'
 function App() {
   const [albums, setAlbums] = useState([])
   const [artists, setArtists] = useState([])
+  const [selectedAlbum, setSelectedAlbum] = useState(null)
+ 
+  
+
+function handleSelectAlbum(album) {
+  setSelectedAlbum(null) // reset first
+  setTimeout(() => {
+    setSelectedAlbum(album)
+  }, 0)
+}
+  
+  async function handleSelectArtist(artist){
+    const albums = await getArtistAlbums(artist.id)
+    // Have to get random album here because getting Artist top picks was deprecated and not working :(
+    const randomNum = Math.floor(Math.random() * albums.length)
+    setSelectedAlbum(albums[randomNum])
+  }
 
   useEffect( () => {
     async function loadAlbums(){
@@ -48,22 +66,21 @@ function App() {
         </div>
       </section>
 
-      <div className="ticks"></div>
 
       <section id="next-steps">
         <div id="docs">
           <h2>New Releases</h2>
-          <ul>
-            <AlbumSection albums={albums} />
+            <AlbumSection albums={albums} onSelectAlbum={handleSelectAlbum} />
           <h2>Top Artists</h2>
-            <ArtistSection artists={artists} />
-          </ul>
+            <ArtistSection artists={artists} onSelectArtist={handleSelectArtist} /> 
         </div>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <PlaybackSelection album={selectedAlbum}/>
+      
+ 
     </>
+    
   )
 }
 
