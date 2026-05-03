@@ -29,7 +29,7 @@ const Widget = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'space-between',
 
-  backgroundColor: '#121212',   // 🔥 use dark, not white
+  backgroundColor: '#121212',
   color: '#fff',
 
   borderTop: '1px solid #282828',
@@ -97,7 +97,7 @@ useEffect(() => {
     width: "100%",
     zIndex: 2000,
 
-    backgroundColor: "#181818",   // 👈 dark
+    backgroundColor: "#181818",
     borderTop: "1px solid #282828",
 
     px: 2,
