@@ -1,8 +1,14 @@
 import { musicApi } from "../../lib/api";
+import { getAccessToken } from "../auth/Musicauth";
 
 
 export async function getTracksbyAlbumId(albumId) {
-    const response = await musicApi.get(`/albums/${albumId}/tracks`)
+    const token = getAccessToken();
+    const response = await musicApi.get(`/albums/${albumId}/tracks`,{
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
     return response.data.items
 }
 
