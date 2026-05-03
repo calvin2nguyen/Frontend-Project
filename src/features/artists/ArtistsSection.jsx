@@ -6,7 +6,7 @@ function ArtistSection({ artists, onSelectArtist }) {
     <Box sx={{ bgcolor: "#121212", color: "white", p: 3 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
         <Typography variant="h5" fontWeight="bold">
-          New Releases 
+          Top Artists 
         </Typography>
         
       </Box>
@@ -58,13 +58,13 @@ function ArtistSection({ artists, onSelectArtist }) {
                   position: "absolute",
                   right: 8,
                   bottom: 8,
-                  bgcolor: "#939794",
+                  bgcolor: "#A2BFFE",
                   color: "black",
                   opacity: 0,
                   transform: "translateY(8px)",
                   transition: "0.2s",
                   "&:hover": {
-                    bgcolor: "#939794",
+                    bgcolor: "#A2BFFE",
                   },
                 }}
               >
@@ -76,7 +76,7 @@ function ArtistSection({ artists, onSelectArtist }) {
               {artist.name}
             </Typography>
 
-            <Typography color="#b3b3b3" noWrap>
+            <Typography color="#A2BFFE" noWrap>
               {artist.artists}
             </Typography>
           </Card>
