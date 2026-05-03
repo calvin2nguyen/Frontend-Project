@@ -14,51 +14,27 @@ import VolumeDownRounded from '@mui/icons-material/VolumeDownRounded';
 import { getTracksbyAlbumId } from "../tracks/TrackApi"
 import { useEffect, useState } from 'react';
 
-const WallPaper = styled('div')({
-  position: 'absolute',
-  width: '100%',
-  height: '100%',
-  top: 0,
-  left: 0,
-  overflow: 'hidden',
-  background: 'linear-gradient(rgb(255, 38, 142) 0%, rgb(255, 105, 79) 100%)',
-  transition: 'all 500ms cubic-bezier(0.175, 0.885, 0.32, 1.275) 0s',
-  '&::before': {
-    content: '""',
-    width: '140%',
-    height: '140%',
-    position: 'absolute',
-    top: '-40%',
-    right: '-50%',
-    background:
-      'radial-gradient(at center center, rgb(62, 79, 249) 0%, rgba(62, 79, 249, 0) 64%)',
-  },
-  '&::after': {
-    content: '""',
-    width: '140%',
-    height: '140%',
-    position: 'absolute',
-    bottom: '-50%',
-    left: '-30%',
-    background:
-      'radial-gradient(at center center, rgb(247, 237, 225) 0%, rgba(247, 237, 225, 0) 70%)',
-    transform: 'rotate(30deg)',
-  },
-});
+
 
 const Widget = styled('div')(({ theme }) => ({
-  padding: 16,
-  borderRadius: 16,
-  width: 343,
-  maxWidth: '100%',
-  margin: 'auto',
-  position: 'relative',
-  zIndex: 1,
-  backgroundColor: 'rgba(255,255,255,0.4)',
-  backdropFilter: 'blur(40px)',
-  ...theme.applyStyles('dark', {
-    backgroundColor: 'rgba(0,0,0,0.6)',
-  }),
+  position: 'fixed',
+  bottom: 0,
+  left: 0,
+  right: 0,
+
+  height: 72,
+  padding: '0 16px',
+
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+
+  backgroundColor: '#121212',   // 🔥 use dark, not white
+  color: '#fff',
+
+  borderTop: '1px solid #282828',
+
+  zIndex: 1000,
 }));
 
 const CoverImage = styled('div')({
@@ -81,26 +57,34 @@ const TinyText = styled(Typography)({
   letterSpacing: 0.2,
 });
 
-function PlaybackSelection({ album }) {
+function PlaybackSelection({ album, track }) {
   const duration = 200; // seconds
   const [position, setPosition] = React.useState(32);
   const [paused, setPaused] = React.useState(false);
   const [selectedTrack, setSelectedTrack] = useState(null)
   const [savedAlbum , setSavedAlbum] = useState(null)
 
+  
   async function getRandomTrack(){
     const response = await getTracksbyAlbumId(album.id)
     const trackNum = Math.floor(Math.random() * response.length)
-    while(trackNum == selectedTrack){
-      trackNum = Math.floor(Math.random() * response.length)
-    }
+  // while (response[trackNum]?.id === selectedTrack?.id) {
+  //   trackNum = Math.floor(Math.random() * response.length)
+  // }
     setSelectedTrack(response[trackNum])
     setSavedAlbum(album)
   }
 
-  useEffect(() => {
+useEffect(() => {
+  if (track) {
+    setSelectedTrack(track)
+    setSavedAlbum(track.album)
+    return
+  }
+  if (album) {
     getRandomTrack()
-  }, [album])
+  }
+}, [album, track])
   
   function formatDuration(value) {
     const minute = Math.floor(value / 60);
@@ -108,7 +92,21 @@ function PlaybackSelection({ album }) {
     return `${minute}:${secondLeft < 10 ? `0${secondLeft}` : secondLeft}`;
   }
   return (
-    <Box sx={{ width: '100%', overflow: 'hidden', position: 'relative', p: 3 }}>
+   <Box
+  sx={{
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    zIndex: 2000,
+
+    backgroundColor: "#181818",   // 👈 dark
+    borderTop: "1px solid #282828",
+
+    px: 2,
+    py: 1,
+  }}
+>
       <Widget>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <CoverImage>
@@ -254,7 +252,7 @@ function PlaybackSelection({ album }) {
           <VolumeUpRounded />
         </Stack>
       </Widget>
-      <WallPaper />
+
     </Box>
   );
 }

@@ -2,13 +2,18 @@ import { useEffect, useState } from 'react'
 import { getAlbums } from './features/albums/AlbumApi'
 import { getArtists ,  getArtistAlbums } from './features/artists/ArtistsApi'
 import { searchTracks } from './features/tracks/TrackApi'
+import TrackList from "./features/tracks/TrackList"
 import PlaybackSelection from './features/playback/PlaybackSection'
 import AlbumSection from './features/albums/AlbumSection'
 import ArtistSection from './features/artists/ArtistsSection'
 import Search from "./features/search/Search"
+import PlayArrowIcon from "@mui/icons-material/PlayArrow"
+import { IconButton } from "@mui/material"
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
+import homeLogo from './assets/logo.png'
+
 import './App.css'
 
 
@@ -17,14 +22,23 @@ function App() {
   const [artists, setArtists] = useState([])
   const [selectedAlbum, setSelectedAlbum] = useState(null)
   const [tracks, setTracks] = useState([])
+  const [selectedTrack, setSelectedTrack] = useState(null)
+  const [playlist, setPlaylist] = useState([])
  
   
 
 function handleSelectAlbum(album) {
   setSelectedAlbum(null)
+  setSelectedTrack(null)
   setTimeout(() => {
     setSelectedAlbum(album)
   }, 0)
+}
+
+function handleAddToPlaylist(track) {
+  if (playlist.find((t) => t.id === track.id)) return
+
+  setPlaylist((prev) => [...prev, track])
 }
 
 async function handleSearch(query) {
@@ -43,7 +57,6 @@ async function handleSearch(query) {
   useEffect( () => {
     async function loadAlbums(){
       const data = await getAlbums("year:2026")
-
       setAlbums(data);
     }
   loadAlbums()
@@ -61,19 +74,13 @@ async function handleSearch(query) {
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>TuneStream</h1>
-          <p>
-            Explore Music
-          </p>
-        </div>
-      </section>
+ <>
+<section
+  id="center"
+  style={{ backgroundImage: `url(${homeLogo})` }}
+>
+</section>
+</>
 
 <div className="app-shell">
   <aside className="left-sidebar">
@@ -87,20 +94,18 @@ async function handleSearch(query) {
 
   <aside className="right-sidebar">
     <Search onSearch={handleSearch} />
-
-    {tracks.map((track) => (
-      <div key={track.id} className="track-result">
-        <img src={track.album.images[0]?.url} />
-        <div>
-          <p>{track.name}</p>
-          <span>{track.artists[0]?.name}</span>
-        </div>
-      </div>
-    ))}
+    <TrackList
+    tracks={tracks}
+    onPlay={setSelectedTrack}
+    onAdd={handleAddToPlaylist}
+  />
   </aside>
 </div>
 
-      {/* <PlaybackSelection album={selectedAlbum}/> */}
+    {selectedAlbum && (
+  <PlaybackSelection album={selectedAlbum} track={selectedTrack} />
+  
+)}
       
  
     </>
